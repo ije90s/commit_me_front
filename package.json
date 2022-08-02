@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/ije90s/commit_me_front/issues"
   },
-  "homepage": "https://github.com/ije90s/commit_me_front#readme",
+  "homepage": "https://commitme.netlify.app/",
   "dependencies": {
     "axios": "^0.27.2",
     "typescript": "^4.7.4"
