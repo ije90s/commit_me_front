@@ -1,0 +1,24 @@
+{
+  "name": "commit-me-front",
+  "version": "1.0.0",
+  "description": "커밋미(클라이언트)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ije90s/commit_me_front.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ije90s/commit_me_front/issues"
+  },
+  "homepage": "https://github.com/ije90s/commit_me_front#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "typescript": "^4.7.4"
+  }
+}
