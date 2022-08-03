@@ -3,16 +3,21 @@ module.exports = {
   env: {
     browser: true,
     node: true,
+    es2021: true,
   },
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
+    "eslint:recommended",
+    "plugin:react/recommended",
+    // 'plugin:@typescript-eslint/eslint-recommended',
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
   ],
-  plugins: ['prettier', '@typescript-eslint'],
+  plugins: ["react", "react-hooks", "@typescript-eslint", "prettier"],
   rules: {
-    'prettier/prettier': [
-      'error',
+    "react/react-in-jsx-scope": "off",
+    "no-duplicate-imports": "error",
+    "prettier/prettier": [
+      "error",
       {
         singleQuote: true,
         semi: true,
@@ -20,11 +25,22 @@ module.exports = {
         tabWidth: 2,
         printWidth: 80,
         bracketSpacing: true,
-        arrowParens: 'avoid',
+        arrowParens: "avoid",
+        endOfLine: "auto",
       },
     ],
+    "@typescript-eslint/no-var-requires": false,
   },
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    parser: '@typescript-eslint/parser',
+    ecmaFeatures: { jsx: true },
+    ecmaVersion: "latest",
+    sourceType: "module",
+    parser: "@typescript-eslint/parser",
+  },
+  settings: {
+    "import/resolver": {
+      typescript: {},
+    },
   },
 };
