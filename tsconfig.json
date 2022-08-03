@@ -2,11 +2,23 @@
     "compilerOptions": {
         "allowJs": true,
         "target": "ES5",
+        "jsx": "preserve",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
         "outDir": "./dist",
-        "moduleResolution": "Node",
+        "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+        "sourceMap": true,
         "lib": ["ES2015", "DOM", "DOM.Iterable"],
         "noImplicitAny": true,
-        "strict": true
+        "strict": true,
+        "skipLibCheck": true
     },
-    "include": ["./src/**/*"]
+    "exclude": ["node_modules"],
+  "include": ["src/*"]
 }
