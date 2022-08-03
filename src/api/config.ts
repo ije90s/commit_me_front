@@ -33,7 +33,9 @@ export const accountApi = {
   rankingRead: (name: string) =>
     commitReal
       .get(`${Account}/ranking?kind=${name}`)
-      .then(res => res.data)
+      .then(res => {
+        return res.data.map((v: any, i: number) => ({ ...v, key: i + 1 }));
+      })
       .catch(err => console.log(err)),
   rankingUpdate: () =>
     commitReal

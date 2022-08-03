@@ -1,4 +1,5 @@
 export interface RankingData {
+  key: number;
   attendances: number;
   comments: number;
   commits: number;

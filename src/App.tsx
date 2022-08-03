@@ -6,6 +6,7 @@ import Weekly from './component/Weekly';
 import Header from './component/Header';
 import Footer from '@/component/footer';
 import RankingView from '@/component/ranking';
+import ProfileModal from '@/component/modal/ProfileModal';
 import Title from '@/component/Title';
 import { RankingArray } from './utils/interface';
 import { accountApi } from './api/config';
@@ -45,6 +46,7 @@ const App = () => {
         </div>
         <Footer />
       </MainContainer>
+      <ProfileModal />
     </ThemeProvider>
   );
 };
