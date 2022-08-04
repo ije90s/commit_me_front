@@ -9,7 +9,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-        "outDir": "./public",
+        "outDir": "./dist",
         "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
