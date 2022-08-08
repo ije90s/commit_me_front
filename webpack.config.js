@@ -22,9 +22,9 @@ module.exports = (env, argv) => {
     resolve: {
       // 배열 안 확장자에 따라 처리
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      alias:{
-        '@': path.resolve(__dirname, 'src')
-      }
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
     },
     module: {
       // loader 설정. bable-loader, ts-loader, css-loader 등¸
@@ -33,22 +33,22 @@ module.exports = (env, argv) => {
           test: /\.tsx?$/,
           use: ['babel-loader', 'ts-loader'],
         },
-        // {
-        //   test: /\.(js|jsx)$/,
-        //   exclude: "/node_modules/",
-        //   loader: "babel-loader",
-        // },
-        // {
-        //   test: /\.css$/,
-        //   use: [{ loader: "css-loader" }],
-        // },
-        // {
-        //   loader: "file-loader",
-        //   test: /\.jfif$/,
-        //   options: {
-        //     name: "[name].[ext]",
-        //   },
-        // },
+        {
+          test: /\.(js|jsx)$/,
+          exclude: '/node_modules/',
+          loader: 'babel-loader',
+        },
+        {
+          loader: 'file-loader',
+          test: /\.(png|jpe?g)$/,
+          options: {
+            name: '[name].[ext]',
+          },
+        },
+        {
+          test: /\.css$/,
+          use: [{ loader: 'css-loader' }],
+        },
       ],
     },
     plugins: [

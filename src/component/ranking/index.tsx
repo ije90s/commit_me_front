@@ -34,7 +34,7 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
     const res = await accountApi.rankingRead(name);
 
     // console.log('네임 >> ', name);
-    // console.log('ranking data >> ', res);
+    console.log('ranking data >> ', res);
 
     setRankingData(res);
   };

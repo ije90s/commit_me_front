@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import GlobalStyle from './utils/style/GlobalStyle';
 import { theme } from './utils/style/theme';
 import Weekly from './component/Weekly';
 import Header from './component/Header';
 import Footer from '@/component/footer';
+import Comment from '@/component/Comment';
 import RankingView from '@/component/ranking';
 import ProfileModal from '@/component/modal/ProfileModal';
 import Title from '@/component/Title';
@@ -42,11 +43,14 @@ const App = () => {
         <div>
           <article>
             <Title>댓글</Title>
+            <Comment />
           </article>
         </div>
+
         <Footer />
       </MainContainer>
-      <ProfileModal />
+      {/* 모달 작업 중. 확인 용도 (삭제 예정) */}
+      {/* <ProfileModal /> */}
     </ThemeProvider>
   );
 };
