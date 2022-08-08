@@ -7,6 +7,7 @@ import { accountApi, attendanceApi } from '@/api/config';
 import Title from '@/component/Title';
 
 interface IRankingData {
+  key: number;
   attendances: number;
   comments: number;
   commits: number;
@@ -28,12 +29,17 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { name } = e.currentTarget;
     const res = await accountApi.rankingRead(name);
+
+    console.log('네임 >> ', name);
     console.log('ranking data >> ', res);
+
     setRankingData(res);
   };
 
-  const handleProfileClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  // const handleProfileClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleProfileClick = async (v: any) => {
     console.log('profile click');
+    console.log(v);
   };
   return (
     <Container>
@@ -43,22 +49,24 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
           <ButtonRectang color='#fff' name='attendances' onClick={handleClick}>
             출석
           </ButtonRectang>
-          {/* 커밋되는거? */}
-          <ButtonRectang name='commits' onClick={handleClick}>
+          {/* 커밋 */}
+          <ButtonRectang name='commit' onClick={handleClick}>
             커밋
           </ButtonRectang>
           {/* 랭킹 조회 */}
-          <ButtonRectang name='pulls' onClick={handleClick}>
+          <ButtonRectang name='pull' onClick={handleClick}>
             풀리퀘스트
           </ButtonRectang>
           {/*  */}
-          <ButtonRectang name='comments' onClick={handleClick}>
+          <ButtonRectang name='comment' onClick={handleClick}>
             댓글
           </ButtonRectang>
         </div>
       </div>
       <div>
-        <RankingBox rankingData={rankingData} onClick={handleProfileClick} />
+        {rankingData?.map(v => (
+          <RankingBox choiceData={v} onClick={handleProfileClick} />
+        ))}
       </div>
     </Container>
   );

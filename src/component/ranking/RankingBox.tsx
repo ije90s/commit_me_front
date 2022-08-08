@@ -1,44 +1,55 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface IRankingData {
-  attendances: number;
-  comments: number;
-  commits: number;
-  pulls: number;
-  createdAt: string;
-  github_address: string;
-  image_url: string;
-  name: string;
-  updatedAt: string;
-  user_id: string;
+interface IChoiceData {
+  key: number | undefined;
+  attendances: number | undefined;
+  comments: number | undefined;
+  commits: number | undefined;
+  pulls: number | undefined;
+  createdAt: string | undefined;
+  github_address: string | undefined;
+  image_url: string | undefined;
+  name: string | undefined;
+  updatedAt: string | undefined;
+  user_id: string | undefined;
 }
 
 interface IProps {
-  rankingData?: Array<IRankingData>;
+  choiceData?: IChoiceData | undefined;
+  value?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const RankingBox: React.FC<IProps> = ({ rankingData, onClick }) => {
-  console.log(rankingData);
+const RankingBox: React.FC<IProps> = ({ choiceData, value, onClick }) => {
+  //? 최초 실행 때는 undefined인데 이 때, 비구조화할당을 쓰고 싶으면 어떻게 해야하지?
+  // const {
+  //   attendances,
+  //   comments,
+  //   commits,
+  //   pulls,
+  //   createdAt,
+  //   github_address,
+  //   image_url,
+  //   name,
+  //   updatedAt,
+  //   user_id,
+  // } = choiceData;
+  // console.log(choiceData);
   return (
-    <>
-      {rankingData?.map((v, i) => (
-        <Box>
-          <div className='text_left'>
-            <h6>{i + 1}.</h6>
-            <div className='circle'>
-              <img src={`${v?.image_url}`} alt={`${v.name}`} />
-            </div>{' '}
-            <p className='user_id_text'>{v?.name}</p>
-            <p className='number_text'>({v?.pulls})</p>
-          </div>
-          <button onClick={onClick} className='text_right'>
-            ☺︎
-          </button>
-        </Box>
-      ))}
-    </>
+    <Box>
+      <div className='text_left'>
+        <h6>{choiceData?.key}.</h6>
+        <div className='circle'>
+          <img src={`${choiceData?.image_url}`} alt={`${choiceData?.name}`} />
+        </div>{' '}
+        <p className='user_id_text'>{choiceData?.name}</p>
+        <p className='number_text'>({choiceData?.pulls})</p>
+      </div>
+      <button onClick={onClick} className='text_right'>
+        ☺︎
+      </button>
+    </Box>
   );
 };
 
