@@ -5,6 +5,7 @@ import RankingBox from './RankingBox';
 import { accountApi, attendanceApi } from '@/api/config';
 
 import Title from '@/component/Title';
+import ProfileModal from '../modal/ProfileModal';
 
 interface IRankingData {
   key: number;
@@ -26,12 +27,14 @@ interface IProps {
 }
 
 const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
+  const [profileOpen, setProfileOpen] = useState(false);
+
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { name } = e.currentTarget;
     const res = await accountApi.rankingRead(name);
 
-    console.log('네임 >> ', name);
-    console.log('ranking data >> ', res);
+    // console.log('네임 >> ', name);
+    // console.log('ranking data >> ', res);
 
     setRankingData(res);
   };
@@ -40,6 +43,7 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
   const handleProfileClick = async (v: any) => {
     console.log('profile click');
     console.log(v);
+    setProfileOpen(true);
   };
   return (
     <Container>
@@ -57,7 +61,7 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
           <ButtonRectang name='pull' onClick={handleClick}>
             풀리퀘스트
           </ButtonRectang>
-          {/*  */}
+
           <ButtonRectang name='comment' onClick={handleClick}>
             댓글
           </ButtonRectang>
@@ -68,6 +72,7 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
           <RankingBox choiceData={v} onClick={handleProfileClick} />
         ))}
       </div>
+      {profileOpen && <ProfileModal setVisible={setProfileOpen} />}
     </Container>
   );
 };
