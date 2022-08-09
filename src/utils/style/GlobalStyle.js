@@ -137,5 +137,11 @@ button{
   overflow:visible; 
   cursor:pointer;
 }
+img {
+  width:inherit ;
+  height:inherit ;
+  object-fit:cover ;
+  
+}
 `;
 export default GlobalStyle;

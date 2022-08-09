@@ -1,15 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import IconGitBlue from '@/utils/img/icon_git_blue.png';
+import { RankingData } from '@/utils/interface';
 
 type Props = {
   style?: React.CSSProperties;
   // onClick?: () => void;
   setVisible?: any;
-  detailData?: '';
+  detailData?: RankingData;
 };
 
 const ProfileModal: React.FC<Props> = ({ setVisible, detailData }) => {
+  console.log(detailData);
   const handleCloseModal = () => {
     setVisible(false);
   };
@@ -21,35 +23,37 @@ const ProfileModal: React.FC<Props> = ({ setVisible, detailData }) => {
           <button onClick={handleCloseModal}>X</button>
         </div>
         <article>
-          <div className='circle'></div>
+          <div className='circle'>
+            <img src={`${detailData?.image_url}`} alt={`${detailData?.user_id}`} />
+          </div>
           <div className='user_info_wrap'>
-            <h3>jiyeon555</h3>
+            <h3>{detailData?.user_id}</h3>
             <p>
-              임지은{' '}
-              <button>
+              {detailData?.name}
+              <a href={`${detailData?.github_address}`} target='_blank' rel='noreferrer'>
                 <img src={IconGitBlue} alt='github' />
-              </button>
+              </a>
             </p>
           </div>
         </article>
         <div className='history_number_wrap'>
           <div className='history_in_box'>
             <div>
-              <h2>100</h2>
+              <h2>{detailData?.attendances}</h2>
               <p>출석</p>
             </div>
             <div>
-              <h2>100</h2>
+              <h2>{detailData?.comments}</h2>
               <p>댓글</p>
             </div>
           </div>
           <div className='history_in_box bottom'>
             <div>
-              <h2>100</h2>
+              <h2>{detailData?.pulls}</h2>
               <p>풀리퀘스트</p>
             </div>
             <div>
-              <h2>100</h2>
+              <h2>{detailData?.commits}</h2>
               <p>커밋</p>
             </div>
           </div>
@@ -77,13 +81,14 @@ const Modal = styled.div`
   top: 10rem;
   left: 50%;
   transform: translateX(-50%);
-  /* width: 30rem; */
-  /* height: 30rem; */
+  width: 40rem;
+  height: 37rem;
   padding: 1rem 1.5rem;
   border-radius: 0.3rem;
 
   .button_wrap {
     text-align: right;
+    margin: 0.2rem 0rem 2rem;
     button {
       width: 3rem;
       height: 3rem;
@@ -100,6 +105,7 @@ const Modal = styled.div`
   article {
     display: flex;
     align-items: center;
+    margin: 0 2.5rem 2.5rem;
 
     .circle {
       width: 7rem;
@@ -107,6 +113,7 @@ const Modal = styled.div`
       background-color: ${props => `${props.theme.colors.gray_1}`};
       border-radius: 50%;
       margin-right: 1.8rem;
+      overflow: hidden;
     }
     .user_info_wrap {
       h3 {
@@ -118,6 +125,19 @@ const Modal = styled.div`
       p {
         color: ${props => `${props.theme.colors.gray_2}`};
         font-size: 1.6rem;
+        display: flex;
+        align-items: center;
+
+        a {
+          margin-left: 1rem;
+          width: 2.5rem;
+          height: 2.5rem;
+          img {
+            width: inherit;
+            height: inherit;
+            object-fit: contain;
+          }
+        }
       }
     }
   }
@@ -136,6 +156,7 @@ const Modal = styled.div`
       h2 {
         font-size: 4rem;
         letter-spacing: -0.1rem;
+        margin-bottom: 1rem;
       }
       p {
         font-size: 1.5rem;

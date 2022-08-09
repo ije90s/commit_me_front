@@ -1,23 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
+import IconGit from '@/utils/img/Icon_git.png';
+import IconArrow from '@/utils/img/Icon_arrow.png';
 
-const Infomation = () => {
+const Information = () => {
+  const handleTopClick = (e: any) => {
+    window.scrollTo(0, 0);
+  };
   return (
-    <StyledInfomation>
+    <StyledInformation>
       <div className='text_wrap'>
         <p>본인이 얼만큼 공부했는지 확인하는 사이트로,</p>
         <p>자정마다 깃허브 데이터를 업데이트 합니다.</p>
       </div>
       <div className='button_wrap'>
-        <button>깃허브</button>
-        <button>위로 가기</button>
+        <a href='https://github.com/' target='_blank' rel='noreferrer'>
+          <img src={`${IconGit}`} alt='github' />
+        </a>
+        <button onClick={handleTopClick}>
+          <img src={`${IconArrow}`} alt='github' />
+        </button>
       </div>
-    </StyledInfomation>
+    </StyledInformation>
   );
 };
 
-export default Infomation;
-const StyledInfomation = styled.div`
+export default Information;
+const StyledInformation = styled.div`
   background-color: ${props => props.theme.colors.gray_1};
   width: 100vw;
   display: flex;
@@ -32,11 +41,15 @@ const StyledInfomation = styled.div`
   }
   .button_wrap {
     display: flex;
-    button {
-      background-color: ${props => props.theme.colors.white};
+    button,
+    a {
+      /* background-color: ${props => props.theme.colors.white}; */
       width: 4rem;
       height: 4rem;
       border-radius: 50%;
+    }
+    button {
+      margin-left: 1rem;
     }
   }
 `;

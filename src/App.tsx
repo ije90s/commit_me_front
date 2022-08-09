@@ -62,8 +62,8 @@ const MainContainer = styled.div`
 
   article {
     margin: 0 auto;
-    width: 120rem;
-    padding: 1rem 2rem;
+    /* width: 120rem; */
+    padding: 1rem 7rem;
   }
   .gray_article {
     background-color: ${props => props.theme.colors.gray_1};

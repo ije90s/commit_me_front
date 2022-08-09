@@ -28,6 +28,7 @@ interface IProps {
 
 const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
   const [profileOpen, setProfileOpen] = useState(false);
+  const [selectData, setSelectData] = useState();
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { name } = e.currentTarget;
@@ -40,9 +41,9 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
   };
 
   // const handleProfileClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  const handleProfileClick = async (v: any) => {
-    console.log('profile click');
-    console.log(v);
+  const handleProfileClick = (value: any) => async (e: any) => {
+    // console.log(value);
+    setSelectData(value);
     setProfileOpen(true);
   };
   return (
@@ -69,10 +70,10 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
       </div>
       <div>
         {rankingData?.map(v => (
-          <RankingBox choiceData={v} onClick={handleProfileClick} />
+          <RankingBox choiceData={v} onClick={handleProfileClick(v)} />
         ))}
       </div>
-      {profileOpen && <ProfileModal setVisible={setProfileOpen} />}
+      {profileOpen && <ProfileModal setVisible={setProfileOpen} detailData={selectData} />}
     </Container>
   );
 };
