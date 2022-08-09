@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Writer from './Writer';
-import Infomation from './Infomation';
+import Information from './Information';
 
 /**
  *
@@ -11,7 +11,7 @@ const Footer = () => {
   return (
     <StyledFooter>
       <Writer />
-      <Infomation />
+      <Information />
     </StyledFooter>
   );
 };
