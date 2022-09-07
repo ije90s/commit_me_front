@@ -31,7 +31,6 @@ const App = () => {
         <Header>commit, ME!</Header>
         <div>
           <article>
-            <Title>출석 체크</Title>
             <Weekly />
           </article>
         </div>
