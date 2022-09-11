@@ -20,11 +20,27 @@ dayjs.extend(weekOfYear);
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 const todayObj = dayjs();
 
-const Weekly = () => {
+interface IAttendanceData {
+  image_url?: string;
+  attendance_date?: string;
+  count?: number;
+}
+interface IProps {
+  attendanceData?: Array<IAttendanceData>;
+  setAttendanceData?: any;
+}
+
+const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
   const [startDate, setStartDate] = React.useState(''); //시작일
   const [endDate, setEndDate] = React.useState(''); //끝일
   const [kind, setKind] = React.useState('now'); //구분
-  const [dayList, setDayList] = useState([]); //주 리스트
+  const [dayList, setDayList] = React.useState([]); //주 리스트
+  const [isAttendance, setAttendance] = React.useState(false);
+
+  //날짜 일만 출력
+  function getDay(date: string) {
+    return new Date(date).getDate();
+  }
 
   //1주 조회
   async function updateWeek() {
@@ -41,15 +57,15 @@ const Weekly = () => {
     });
     setDayList(prev => {
       for (let i = 0; i < weekDate.length; i++) {
-        const date = new Date(weekDate[i]);
-        weekDate[i] = date.getDate().toString();
+        weekDate[i] = getDay(weekDate[i]);
       }
       prev = weekDate;
       return prev;
     });
+    handleAttendance();
   }
 
-  //* 이전 주
+  //이전 주
   const handlePrev = () => {
     setKind(() => {
       return 'prev';
@@ -57,13 +73,26 @@ const Weekly = () => {
     updateWeek();
   };
 
-  //* 다음 주
+  //다음 주
   const handleNext = () => {
     setKind(() => {
       return 'next';
     });
     updateWeek();
   };
+
+  //출석 조회
+  async function handleAttendance() {
+    const res = await attendanceApi.read({ startDate, endDate });
+    setAttendanceData(() => {
+      return res;
+    });
+    setAttendance(prev => {
+      if (res.length === 0) prev = true;
+      else prev = false;
+      return prev;
+    });
+  }
 
   React.useEffect(() => {
     updateWeek();
@@ -92,14 +121,37 @@ const Weekly = () => {
           〈
         </ButtonCircle>
         <div className='calendar_section'>
-          <div className='day_of_the_week_box'>
-            {weekDays?.map((v, i) => (
-              <h3 key={i}>{v}</h3>
-            ))}
+          <div style={{ padding: '0 72px 10px 72px' }}>
+            <div className='day_of_the_week_box'>
+              {weekDays?.map((v, i) => (
+                <h3 key={i}>{v}</h3>
+              ))}
+            </div>
+            <div className='date_box'>
+              {dayList?.map((v, i) => (
+                <p>{v}</p>
+              ))}
+            </div>
           </div>
-          <div className='date_box'>
-            {dayList?.map((v, i) => (
-              <p>{v}</p>
+          <div
+            className='attendance_all_box'
+            style={{ backgroundColor: isAttendance ? '' : '#E5E5E5' }}
+          >
+            {attendanceData?.map(v => (
+              <div className='attendance_box'>
+                <div className='text_left'>
+                  <div className='circle'>
+                    <img src={`${v.image_url}`} />
+                  </div>
+                  <p>
+                    {v.attendance_date
+                      ?.split(',')
+                      .map(v => getDay(v) + '일')
+                      ?.join(', ')}
+                  </p>
+                </div>
+                <div className='text_right'>({v.count})</div>
+              </div>
             ))}
           </div>
         </div>
@@ -113,6 +165,9 @@ const Weekly = () => {
         >
           〉
         </ButtonCircle>
+      </div>
+      <div className='calendar_title'>
+        <button onClick={handleAttendance}>∨</button>
       </div>
     </Container>
   );
@@ -142,8 +197,8 @@ const Container = styled.div`
     .calendar_section {
       border: ${props => `1px solid ${props.theme.colors.blue_1}`};
       border-radius: 0.6rem;
-      padding: 4.5rem 15rem;
-      width: 55rem;
+      padding-top: 3rem;
+      width: 997px;
       .day_of_the_week_box,
       .date_box {
         display: flex;
@@ -154,6 +209,43 @@ const Container = styled.div`
         color: ${props => props.theme.colors.gray_2};
       }
       .date_box {
+      }
+    }
+  }
+  .attendance_all_box {
+    padding: 1rem;
+    border-radius: 0 0 0.8rem 0.8rem;
+    .attendance_box {
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 2rem;
+      border-radius: 0.8rem;
+      padding: 1rem 2rem;
+      margin: 1rem 0;
+      .text_left {
+        display: flex;
+        align-items: center;
+      }
+      .text_right {
+        text-align: right;
+        color: ${props => props.theme.colors.gray_1};
+      }
+      .text_right:hover {
+        color: ${props => props.theme.colors.blue_1};
+      }
+      .circle {
+        background-color: ${props => props.theme.colors.gray_1};
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: 50%;
+        margin-right: 2rem;
+        overflow: hidden;
+        img {
+          width: inherit;
+          height: inherit;
+        }
       }
     }
   }

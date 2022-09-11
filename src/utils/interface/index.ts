@@ -12,4 +12,12 @@ export interface RankingData {
   user_id: string;
 }
 
+export interface AttendanceData {
+  image_url: string;
+  attendance_date: string;
+  count: number;
+}
+
 export type RankingArray = RankingData[];
+
+export type AttendanceArray = AttendanceData[];

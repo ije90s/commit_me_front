@@ -9,15 +9,16 @@ import Comment from '@/component/Comment';
 import RankingView from '@/component/ranking';
 import ProfileModal from '@/component/modal/ProfileModal';
 import Title from '@/component/Title';
-import { RankingArray } from './utils/interface';
+import { RankingArray, AttendanceArray } from './utils/interface';
 import { accountApi } from './api/config';
 
 const App = () => {
   const [rankingData, setRankingData] = useState<RankingArray>([]);
+  const [attendanceData, setAttendanceData] = useState<AttendanceArray>([]);
 
   const fetchData = async () => {
-    const res = await accountApi.rankingRead('attendances');
-    console.log('ranking data >> ', res);
+    let res = await accountApi.rankingRead('attendance');
+    console.log('ranking data >>> ', res);
     setRankingData(res);
   };
   useEffect(() => {
@@ -31,7 +32,7 @@ const App = () => {
         <Header>commit, ME!</Header>
         <div>
           <article>
-            <Weekly />
+            <Weekly attendanceData={attendanceData} setAttendanceData={setAttendanceData} />
           </article>
         </div>
         <div className='gray_article'>
