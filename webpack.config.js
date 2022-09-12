@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
       // 배열 안 확장자에 따라 처리
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
       alias: {
-        '@': path.resolve(__dirname, '/src'),
+        '@': path.resolve(__dirname, 'src'),
       },
     },
     module: {
