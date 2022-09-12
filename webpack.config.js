@@ -13,7 +13,7 @@ module.exports = (env, argv) => {
       port: 3000,
       hot: true,
     },
-    entry: '/src/index.tsx', // 컴파일 시작할 파일, 해당 파일부터 필요한 모듈 로딩 및 하나의 파일로 묶는다.
+    entry: './src/index.tsx', // 컴파일 시작할 파일, 해당 파일부터 필요한 모듈 로딩 및 하나의 파일로 묶는다.
     output: {
       // webpack이 생성한 결과물의 위치, 이름
       path: path.join(__dirname, '/dist'),
@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
       // 배열 안 확장자에 따라 처리
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
       alias: {
-        '@': path.resolve(__dirname, 'src'),
+        '@': path.resolve(__dirname, '/src'),
       },
     },
     module: {
