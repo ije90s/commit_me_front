@@ -18,7 +18,7 @@ const Information = () => {
           <img src={`${IconGit}`} alt='github' />
         </a>
         <button onClick={handleTopClick}>
-          <img src={`${IconArrow}`} alt='github' />
+          <img src={`${IconArrow}`} alt='top' />
         </button>
       </div>
     </StyledInformation>

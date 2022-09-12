@@ -35,7 +35,7 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
   const [endDate, setEndDate] = React.useState(''); //끝일
   const [kind, setKind] = React.useState('now'); //구분
   const [dayList, setDayList] = React.useState([]); //주 리스트
-  const [isAttendance, setAttendance] = React.useState(false);
+  const [visible, setVisible] = React.useState(false); //출석 보여주기 상태
 
   //날짜 일만 출력
   function getDay(date: string) {
@@ -45,15 +45,20 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
   //1주 조회
   async function updateWeek() {
     //현재의 주 조회
-    const res = await weekApi.read(startDate, kind);
+    let res = await weekApi.read(startDate, kind);
     const weekDate = res.weekDate.split(',');
 
-    //시작일/끝일/주 리스트 셋팅
-    setStartDate(() => {
-      return weekDate[0];
+    //출석체크 조회
+    res = await attendanceApi.read({ startDate: weekDate[0], endDate: weekDate[6] });
+
+    //시작일/끝일/주 리스트/출석체크 셋팅
+    setStartDate(prev => {
+      prev = weekDate[0];
+      return prev;
     });
-    setEndDate(() => {
-      return weekDate[6];
+    setEndDate(prev => {
+      prev = weekDate[6];
+      return prev;
     });
     setDayList(prev => {
       for (let i = 0; i < weekDate.length; i++) {
@@ -62,37 +67,33 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
       prev = weekDate;
       return prev;
     });
-    handleAttendance();
+    setVisible(prev => {
+      prev = res.length === 0 ? false : true;
+      return prev;
+    });
+    setAttendanceData((prev: any) => {
+      prev = res;
+      return res;
+    });
   }
 
   //이전 주
   const handlePrev = () => {
-    setKind(() => {
-      return 'prev';
+    setKind(prev => {
+      prev = 'prev';
+      return prev;
     });
     updateWeek();
   };
 
   //다음 주
   const handleNext = () => {
-    setKind(() => {
-      return 'next';
+    setKind(prev => {
+      prev = 'next';
+      return prev;
     });
     updateWeek();
   };
-
-  //출석 조회
-  async function handleAttendance() {
-    const res = await attendanceApi.read({ startDate, endDate });
-    setAttendanceData(() => {
-      return res;
-    });
-    setAttendance(prev => {
-      if (res.length === 0) prev = true;
-      else prev = false;
-      return prev;
-    });
-  }
 
   React.useEffect(() => {
     updateWeek();
@@ -118,7 +119,7 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
             paddingTop: '0.2rem',
           }}
         >
-          〈
+          ＜
         </ButtonCircle>
         <div className='calendar_section'>
           <div style={{ padding: '0 72px 10px 72px' }}>
@@ -133,10 +134,7 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
               ))}
             </div>
           </div>
-          <div
-            className='attendance_all_box'
-            style={{ backgroundColor: isAttendance ? '' : '#E5E5E5' }}
-          >
+          <div className='attendance_all_box' style={{ backgroundColor: visible ? '#e5e5e5' : '' }}>
             {attendanceData?.map(v => (
               <div className='attendance_box'>
                 <div className='text_left'>
@@ -160,15 +158,15 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
           style={{
             marginLeft: '-2rem',
             paddingLeft: '0.35rem',
-            paddingTop: '0.2rem',
+            paddingTop: '0.1rem',
           }}
         >
-          〉
+          ＞
         </ButtonCircle>
       </div>
-      <div className='calendar_title'>
-        <button onClick={handleAttendance}>∨</button>
-      </div>
+      {/* <div className='calendar_title'>
+        <button onClick={handleAttendance()}>∨</button>
+      </div> */}
     </Container>
   );
 };

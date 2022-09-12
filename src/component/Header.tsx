@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import HeaderPic from '@/utils/img/Header_pic.png';
 
 type Props = {
   children: string;
@@ -18,6 +19,9 @@ export default Header;
 const StyledHeader = styled.header`
   height: 25rem;
   background-color: ${props => props.theme.colors.gray_1};
+  background-image: url(${HeaderPic});
+  background-repeat: no-repeat;
+  background-position: top center;
   text-align: center;
   position: relative;
   h1 {
