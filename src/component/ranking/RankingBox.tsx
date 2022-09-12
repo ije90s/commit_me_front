@@ -35,7 +35,7 @@ const RankingBox: React.FC<IProps> = ({ choiceData, value, onClick }) => {
   //   updatedAt,
   //   user_id,
   // } = choiceData;
-  // console.log(choiceData);
+  //console.log(111111, choiceData, value);
   return (
     <Box>
       <div className='text_left'>

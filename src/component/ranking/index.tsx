@@ -51,7 +51,7 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
       <div className='top_section'>
         <Title style={{ marginTop: '0', marginLeft: '0' }}>랭킹</Title>
         <div className='button_wrap'>
-          <ButtonRectang color='#fff' name='attendances' onClick={handleClick}>
+          <ButtonRectang color='#fff' name='attendance' onClick={handleClick}>
             출석
           </ButtonRectang>
           {/* 커밋 */}

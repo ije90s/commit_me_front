@@ -14,11 +14,11 @@ const Information = () => {
         <p>자정마다 깃허브 데이터를 업데이트 합니다.</p>
       </div>
       <div className='button_wrap'>
-        <a href='https://github.com/' target='_blank' rel='noreferrer'>
+        <a href='https://github.com/ije90s/commit_me_front' target='_blank' rel='noreferrer'>
           <img src={`${IconGit}`} alt='github' />
         </a>
         <button onClick={handleTopClick}>
-          <img src={`${IconArrow}`} alt='github' />
+          <img src={`${IconArrow}`} alt='top' />
         </button>
       </div>
     </StyledInformation>

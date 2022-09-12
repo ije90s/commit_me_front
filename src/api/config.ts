@@ -83,3 +83,11 @@ export const historyApi = {
       .then(res => console.log(res))
       .catch(err => console.log(err)),
 };
+
+export const weekApi = {
+  read: (startDate: string, kind: string) =>
+    commitReal
+      .get(`week-search?startDate=${startDate}&kind=${kind}`)
+      .then(res => res.data)
+      .catch(err => console.log(err)),
+};
