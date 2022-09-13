@@ -13,29 +13,15 @@ interface IChoiceData {
   name: string | undefined;
   updatedAt: string | undefined;
   user_id: string | undefined;
+  count: number | undefined;
 }
 
 interface IProps {
   choiceData?: IChoiceData | undefined;
-  value?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const RankingBox: React.FC<IProps> = ({ choiceData, value, onClick }) => {
-  //? 최초 실행 때는 undefined인데 이 때, 비구조화할당을 쓰고 싶으면 어떻게 해야하지?
-  // const {
-  //   attendances,
-  //   comments,
-  //   commits,
-  //   pulls,
-  //   createdAt,
-  //   github_address,
-  //   image_url,
-  //   name,
-  //   updatedAt,
-  //   user_id,
-  // } = choiceData;
-  //console.log(111111, choiceData, value);
+const RankingBox: React.FC<IProps> = ({ choiceData, onClick }) => {
   return (
     <Box>
       <div className='text_left'>
@@ -44,7 +30,7 @@ const RankingBox: React.FC<IProps> = ({ choiceData, value, onClick }) => {
           <img src={`${choiceData?.image_url}`} alt={`${choiceData?.name}`} />
         </div>{' '}
         <p className='user_id_text'>{choiceData?.name}</p>
-        <p className='number_text'>({choiceData?.pulls})</p>
+        <p className='number_text'>({choiceData?.count})</p>
       </div>
       <button onClick={onClick} className='text_right'>
         ☺︎

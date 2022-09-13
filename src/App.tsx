@@ -18,7 +18,12 @@ const App = () => {
 
   const fetchData = async () => {
     let res = await accountApi.rankingRead('attendance');
-    console.log('ranking data >>> ', res);
+    for (let i = 0; i < res.length; i++) {
+      res[i] = {
+        ...res[i],
+        count: res[i]['attendances'],
+      };
+    }
     setRankingData(res);
   };
   useEffect(() => {

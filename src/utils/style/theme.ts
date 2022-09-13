@@ -5,8 +5,8 @@ const calcRem = (size: number) => `${size / 10}rem`;
 const fontSizes = {
   small: calcRem(12),
   base: calcRem(14),
-  medium: calcRem(15),
-  large: calcRem(16),
+  medium: calcRem(20),
+  large: calcRem(46),
 };
 
 // const paddings = {
@@ -47,11 +47,14 @@ const colors: Object = {
   blue_3: '#D9E9F6',
   blue_4: '#c1d3e8',
   blue_5: '#3397E8',
+  dark_blue: '#0063D2',
 
   gray_4: '#e8e8e8',
   gray_5: '#aaaaaa',
-  redText: '#ff1900',
-  server_orange: '#FF8A65',
+  red: '#ff1900',
+  yellow: '#f9fd43',
+  orange: '#FF8A65',
+  green: '#c2e59c',
 };
 
 export const theme: DefaultTheme = { fontSizes, colors, deviceSizes, device };

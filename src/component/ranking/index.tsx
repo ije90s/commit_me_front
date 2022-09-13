@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import ButtonRectang from '../button/ButtonRectang';
 import RankingBox from './RankingBox';
 import { accountApi, attendanceApi } from '@/api/config';
-
 import Title from '@/component/Title';
 import ProfileModal from '../modal/ProfileModal';
 
@@ -19,6 +18,7 @@ interface IRankingData {
   name: string;
   updatedAt: string;
   user_id: string;
+  count: number;
 }
 interface IProps {
   rankingData?: Array<IRankingData>;
@@ -29,20 +29,27 @@ interface IProps {
 const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [selectData, setSelectData] = useState();
+  const [tab, setTab] = useState([1, 0, 0, 0]); //탭 리스트
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { name } = e.currentTarget;
     const res = await accountApi.rankingRead(name);
-
-    // console.log('네임 >> ', name);
-    console.log('ranking data >> ', res);
-
+    for (let i = 0; i < res.length; i++) {
+      res[i] = {
+        ...res[i],
+        count: res[i][`${name}s`],
+      };
+    }
     setRankingData(res);
+    setTab(prev => {
+      if (name === 'attendance') prev = [1, 0, 0, 0];
+      else if (name === 'commit') prev = [0, 1, 0, 0];
+      else if (name === 'pull') prev = [0, 0, 1, 0];
+      else prev = [0, 0, 0, 1];
+      return prev;
+    });
   };
-
-  // const handleProfileClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
   const handleProfileClick = (value: any) => async (e: any) => {
-    // console.log(value);
     setSelectData(value);
     setProfileOpen(true);
   };
@@ -51,19 +58,20 @@ const RankingView: React.FC<IProps> = ({ rankingData, setRankingData }) => {
       <div className='top_section'>
         <Title style={{ marginTop: '0', marginLeft: '0' }}>랭킹</Title>
         <div className='button_wrap'>
-          <ButtonRectang color='#fff' name='attendance' onClick={handleClick}>
+          <ButtonRectang
+            color={tab[0] ? '#fff' : '#18A0FB'}
+            name='attendance'
+            onClick={handleClick}
+          >
             출석
           </ButtonRectang>
-          {/* 커밋 */}
-          <ButtonRectang name='commit' onClick={handleClick}>
+          <ButtonRectang color={tab[1] ? '#fff' : '#18A0FB'} name='commit' onClick={handleClick}>
             커밋
           </ButtonRectang>
-          {/* 랭킹 조회 */}
-          <ButtonRectang name='pull' onClick={handleClick}>
-            풀리퀘스트
+          <ButtonRectang color={tab[2] ? '#fff' : '#18A0FB'} name='pull' onClick={handleClick}>
+            풀퀘
           </ButtonRectang>
-
-          <ButtonRectang name='comment' onClick={handleClick}>
+          <ButtonRectang color={tab[3] ? '#fff' : '#18A0FB'} name='comment' onClick={handleClick}>
             댓글
           </ButtonRectang>
         </div>
