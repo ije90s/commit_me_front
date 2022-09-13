@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Children, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import cn from 'classnames';
 import dayjs from 'dayjs';
 import ButtonCircle from './button/ButtonCircle';
 import Title from '@/component/Title';
@@ -32,10 +33,10 @@ interface IProps {
 
 const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
   const [startDate, setStartDate] = React.useState(''); //시작일
-  const [endDate, setEndDate] = React.useState(''); //끝일
   const [kind, setKind] = React.useState('now'); //구분
   const [dayList, setDayList] = React.useState([]); //주 리스트
-  const [visible, setVisible] = React.useState(false); //출석 보여주기 상태
+
+  const now = new Date();
 
   //날짜 일만 출력
   function getDay(date: string) {
@@ -51,24 +52,19 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
     //출석체크 조회
     res = await attendanceApi.read({ startDate: weekDate[0], endDate: weekDate[6] });
 
-    //시작일/끝일/주 리스트/출석체크 셋팅
+    //시작일/주 리스트/출석체크 셋팅
     setStartDate(prev => {
       prev = weekDate[0];
       return prev;
     });
-    setEndDate(prev => {
-      prev = weekDate[6];
-      return prev;
-    });
     setDayList(prev => {
       for (let i = 0; i < weekDate.length; i++) {
-        weekDate[i] = getDay(weekDate[i]);
+        weekDate[i] = {
+          week: weekDays[i],
+          date: getDay(weekDate[i]),
+        };
       }
       prev = weekDate;
-      return prev;
-    });
-    setVisible(prev => {
-      prev = res.length === 0 ? false : true;
       return prev;
     });
     setAttendanceData((prev: any) => {
@@ -94,6 +90,12 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
     });
     updateWeek();
   };
+
+  // useEffect(() => {
+  //   return () => console.log('Clean up');
+  // });
+
+  // const Week = useRef(null);
 
   React.useEffect(() => {
     updateWeek();
@@ -122,21 +124,45 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
           ＜
         </ButtonCircle>
         <div className='calendar_section'>
-          <div style={{ padding: '0 72px 10px 72px' }}>
-            <div className='day_of_the_week_box'>
-              {weekDays?.map((v, i) => (
-                <h3 key={i}>{v}</h3>
-              ))}
-            </div>
-            <div className='date_box'>
-              {dayList?.map((v, i) => (
-                <p>{v}</p>
-              ))}
-            </div>
+          <div className='week_section'>
+            {dayList?.map((v, i) => (
+              <>
+                <div
+                  className={cn(
+                    'week_box',
+                    i === now.getDay() && now.getDate() === v['date'] ? 'now' : '',
+                  )}
+                >
+                  <h3 className='week_title'>{v['week']}</h3>
+                  <p className={cn(`week_${v['date']}`, i === 0 ? 'sun' : i === 6 ? 'sat' : '')}>
+                    {v['date']}
+                  </p>
+                </div>
+              </>
+            ))}
           </div>
-          <div className='attendance_all_box' style={{ backgroundColor: visible ? '#e5e5e5' : '' }}>
+          <div
+            className={cn(
+              'attendance_section',
+              attendanceData?.length === 0 ? '' : 'attendance_bg',
+            )}
+          >
             {attendanceData?.map(v => (
-              <div className='attendance_box'>
+              <div
+                className='attendance_box'
+                onMouseOver={() => {
+                  v.attendance_date?.split(',').map(v => {
+                    const dayId = document.querySelector(`.week_${getDay(v)}`);
+                    dayId?.classList.add('week_circle');
+                  });
+                }}
+                onMouseLeave={() => {
+                  v.attendance_date?.split(',').map(v => {
+                    const dayId = document.querySelector(`.week_${getDay(v)}`);
+                    dayId?.classList.remove('week_circle');
+                  });
+                }}
+              >
                 <div className='text_left'>
                   <div className='circle'>
                     <img src={`${v.image_url}`} />
@@ -148,7 +174,7 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
                       ?.join(', ')}
                   </p>
                 </div>
-                <div className='text_right'>({v.count})</div>
+                <p className='text_right'>({v.count})</p>
               </div>
             ))}
           </div>
@@ -191,28 +217,48 @@ const Container = styled.div`
     justify-content: center;
     font-size: 2rem;
     width: 100%;
-    /* background-color: aliceblue; */
     .calendar_section {
       border: ${props => `1px solid ${props.theme.colors.blue_1}`};
       border-radius: 0.6rem;
-      padding-top: 3rem;
-      width: 997px;
-      .day_of_the_week_box,
-      .date_box {
+      width: 100%;
+      .week_section {
         display: flex;
         justify-content: space-between;
-      }
-      .day_of_the_week_box {
-        margin-bottom: 2rem;
-        color: ${props => props.theme.colors.gray_2};
-      }
-      .date_box {
+        padding: 3rem 7.2rem 2rem 7.2rem;
+        .week_box {
+          width: 5.7rem;
+          text-align: center;
+          border-radius: 0.8rem;
+          padding: 1.6rem 0;
+        }
+        .week_title {
+          margin-bottom: 3rem;
+          color: ${props => props.theme.colors.gray_2};
+        }
+        .week_circle {
+          background-color: ${props => props.theme.colors.green};
+          border-radius: 50%;
+          padding: 1rem;
+          display: inline;
+        }
+        .now {
+          background-color: ${props => props.theme.colors.yellow};
+        }
+        .sun {
+          color: ${props => props.theme.colors.red};
+        }
+        .sat {
+          color: ${props => props.theme.colors.blue_1};
+        }
       }
     }
   }
-  .attendance_all_box {
+  .attendance_bg {
+    background-color: ${props => props.theme.colors.gray_1};
+  }
+  .attendance_section {
     padding: 1rem;
-    border-radius: 0 0 0.8rem 0.8rem;
+    border-radius: 0 0 0.6rem 0.6rem;
     .attendance_box {
       background-color: #fff;
       display: flex;
@@ -222,16 +268,19 @@ const Container = styled.div`
       border-radius: 0.8rem;
       padding: 1rem 2rem;
       margin: 1rem 0;
+      &:hover {
+        color: ${props => props.theme.colors.blue_1};
+        .text_right {
+          color: ${props => props.theme.colors.blue_1};
+        }
+      }
       .text_left {
         display: flex;
         align-items: center;
       }
       .text_right {
-        text-align: right;
+        align: right;
         color: ${props => props.theme.colors.gray_1};
-      }
-      .text_right:hover {
-        color: ${props => props.theme.colors.blue_1};
       }
       .circle {
         background-color: ${props => props.theme.colors.gray_1};

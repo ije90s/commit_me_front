@@ -50,7 +50,7 @@ const ProfileModal: React.FC<Props> = ({ setVisible, detailData }) => {
           <div className='history_in_box bottom'>
             <div>
               <h2>{detailData?.pulls}</h2>
-              <p>풀리퀘스트</p>
+              <p>풀퀘</p>
             </div>
             <div>
               <h2>{detailData?.commits}</h2>

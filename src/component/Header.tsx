@@ -27,11 +27,11 @@ const StyledHeader = styled.header`
   h1 {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 40%;
     transform: translate(-50%);
     width: fit-content;
-    color: ${props => props.theme.colors.blue_1};
-    font-size: 3.5rem;
+    color: ${props => props.theme.colors.dark_blue};
+    font-size: ${props => props.theme.fontSizes.large};
     font-weight: bold;
   }
   /* padding-top: 3rem; */

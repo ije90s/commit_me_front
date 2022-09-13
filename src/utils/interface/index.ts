@@ -10,6 +10,7 @@ export interface RankingData {
   name: string;
   updatedAt: string;
   user_id: string;
+  count: number;
 }
 
 export interface AttendanceData {
