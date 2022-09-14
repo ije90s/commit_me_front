@@ -152,14 +152,16 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
                 className='attendance_box'
                 onMouseOver={() => {
                   v.attendance_date?.split(',').map(v => {
-                    const dayId = document.querySelector(`.week_${getDay(v)}`);
-                    dayId?.classList.add('week_circle');
+                    const day = getDay(v);
+                    const dayId = document.querySelector(`.week_${day}`);
+                    dayId?.classList.add(`week_circle${day < 10 ? '2' : ''}`);
                   });
                 }}
                 onMouseLeave={() => {
                   v.attendance_date?.split(',').map(v => {
-                    const dayId = document.querySelector(`.week_${getDay(v)}`);
-                    dayId?.classList.remove('week_circle');
+                    const day = getDay(v);
+                    const dayId = document.querySelector(`.week_${day}`);
+                    dayId?.classList.remove(`week_circle${day < 10 ? '2' : ''}`);
                   });
                 }}
               >
@@ -235,11 +237,18 @@ const Container = styled.div`
           margin-bottom: 3rem;
           color: ${props => props.theme.colors.gray_2};
         }
-        .week_circle {
+        .week_circle,
+        .week_circle2 {
           background-color: ${props => props.theme.colors.green};
-          border-radius: 50%;
-          padding: 1rem;
           display: inline;
+        }
+        .week_circle {
+          border-radius: 50%;
+          padding: 0.5rem 1rem;
+        }
+        .week_circle2 {
+          border-radius: 50%;
+          padding: 0.5rem 1.6rem;
         }
         .now {
           background-color: ${props => props.theme.colors.yellow};
