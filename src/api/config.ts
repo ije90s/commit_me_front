@@ -85,9 +85,14 @@ export const historyApi = {
 };
 
 export const weekApi = {
-  read: (startDate: string, kind: string) =>
+  weekRead: (startDate: string, kind: string) =>
     commitReal
       .get(`week-search?startDate=${startDate}&kind=${kind}`)
+      .then(res => res.data)
+      .catch(err => console.log(err)),
+  monthRead: (year: string, month: string) =>
+    commitReal
+      .get(`month-week-search?year=${year}&month=${month}`)
       .then(res => res.data)
       .catch(err => console.log(err)),
 };

@@ -2,7 +2,8 @@ import React, { Children, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import cn from 'classnames';
 import dayjs from 'dayjs';
-import ButtonCircle from './button/ButtonCircle';
+import ButtonCircle from '../button/ButtonCircle';
+import SelectBox from '../select/Selector';
 import Title from '@/component/Title';
 import weekday from 'dayjs/plugin/weekday';
 import isoWeek from 'dayjs/plugin/isoWeek';
@@ -10,7 +11,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/ko';
 import { weekApi, attendanceApi } from '@/api/config';
-import ButtonRectang from './button/ButtonRectang';
+import ButtonRectang from '../button/ButtonRectang';
 dayjs.locale('ko');
 dayjs.extend(weekday);
 dayjs.extend(isoWeek);
@@ -153,96 +154,6 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
           </ButtonRectang>
         </div>
       </div>
-      <div className='calendar_title'>
-        <select
-          name='year'
-          value={year}
-          onChange={e => {
-            setYear(e.currentTarget.value);
-          }}
-          style={{ fontSize: '2rem', lineHeight: '2rem' }}
-        >
-          <option key='2022' value='2022'>
-            2022
-          </option>
-          <option key='2023' value='2022'>
-            2023
-          </option>
-          <option key='2024' value='2022'>
-            2024
-          </option>
-          <option key='2025' value='2022'>
-            2025
-          </option>
-          <option key='2026' value='2022'>
-            2026
-          </option>
-        </select>{' '}
-        년{' '}
-        <select
-          name='month'
-          value={month}
-          onChange={e => {
-            handleMonth(e.currentTarget.value);
-          }}
-          style={{ fontSize: '2rem', lineHeight: '2rem' }}
-        >
-          <option key='1' value='1'>
-            1
-          </option>
-          <option key='2' value='2'>
-            2
-          </option>
-          <option key='3' value='3'>
-            3
-          </option>
-          <option key='4' value='4'>
-            4
-          </option>
-          <option key='5' value='5'>
-            5
-          </option>
-          <option key='6' value='6'>
-            6
-          </option>
-          <option key='7' value='7'>
-            7
-          </option>
-          <option key='8' value='8'>
-            8
-          </option>
-          <option key='9' value='9'>
-            9
-          </option>
-          <option key='10' value='10'>
-            10
-          </option>
-          <option key='11' value='11'>
-            11
-          </option>
-          <option key='12' value='12'>
-            12
-          </option>
-        </select>{' '}
-        월{' '}
-        <select
-          name='weeks'
-          value={week}
-          onChange={e => {
-            const { value } = e.currentTarget;
-            setWeek(value);
-            handleCalendar(month, Number(value), calendarList);
-          }}
-          style={{ fontSize: '2rem', lineHeight: '2rem' }}
-        >
-          {calendarList?.map((v, i) => (
-            <option key={v['weekNum']} value={v['weekNum']}>
-              {v['weekNum']}
-            </option>
-          ))}
-        </select>{' '}
-        주차
-      </div>
       <div className='calendar_wrap'>
         <ButtonCircle
           onClick={handlePrev}
@@ -255,64 +166,96 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
         >
           ＜
         </ButtonCircle>
-        <div className='calendar_section'>
-          <div className='week_section'>
-            {weekList?.map((v, i) => (
-              <>
-                <div
-                  className={cn(
-                    'week_box',
-                    i === now.getDay() && now.getDate() === getDay(v) ? 'now' : '',
-                  )}
-                >
-                  <h3 className={cn('week_title', i === 0 ? 'sun' : i === 6 ? 'sat' : '')}>
-                    {weekDays[i]}
-                  </h3>
-                  <p className={cn(`week_${getDay(v)}`)}>{getDay(v)}</p>
-                </div>
-              </>
-            ))}
-          </div>
-          <div
-            className={cn(
-              'attendance_section',
-              attendanceData?.length === 0 ? '' : 'attendance_bg',
-            )}
+        <div className='calendar_title'>
+          <SelectBox></SelectBox>
+          <select
+            name='year'
+            value={year}
+            onChange={e => {
+              setYear(e.currentTarget.value);
+            }}
+            style={{ fontSize: '2rem', lineHeight: '2rem' }}
           >
-            {attendanceData?.map(v => (
-              <div
-                className='attendance_box'
-                onMouseOver={() => {
-                  v.attendance_date?.split(',').map(v => {
-                    const day = getDay(v);
-                    const dayId = document.querySelector(`.week_${day}`);
-                    console.log(dayId);
-                    dayId?.classList.add(`week_circle${day < 10 ? '2' : ''}`);
-                  });
-                }}
-                onMouseLeave={() => {
-                  v.attendance_date?.split(',').map(v => {
-                    const day = getDay(v);
-                    const dayId = document.querySelector(`.week_${day}`);
-                    dayId?.classList.remove(`week_circle${day < 10 ? '2' : ''}`);
-                  });
-                }}
-              >
-                <div className='text_left'>
-                  <div className='circle'>
-                    <img src={`${v.image_url}`} />
-                  </div>
-                  <p>
-                    {v.attendance_date
-                      ?.split(',')
-                      .map(v => getDay(v) + '일')
-                      ?.join(', ')}
-                  </p>
-                </div>
-                <p className='text_right'>({v.count})</p>
-              </div>
+            <option key='2022' value='2022'>
+              2022
+            </option>
+            <option key='2023' value='2022'>
+              2023
+            </option>
+            <option key='2024' value='2022'>
+              2024
+            </option>
+            <option key='2025' value='2022'>
+              2025
+            </option>
+            <option key='2026' value='2022'>
+              2026
+            </option>
+          </select>{' '}
+          년{' '}
+          <select
+            name='month'
+            value={month}
+            onChange={e => {
+              handleMonth(e.currentTarget.value);
+            }}
+            style={{ fontSize: '2rem', lineHeight: '2rem' }}
+          >
+            <option key='1' value='1'>
+              1
+            </option>
+            <option key='2' value='2'>
+              2
+            </option>
+            <option key='3' value='3'>
+              3
+            </option>
+            <option key='4' value='4'>
+              4
+            </option>
+            <option key='5' value='5'>
+              5
+            </option>
+            <option key='6' value='6'>
+              6
+            </option>
+            <option key='7' value='7'>
+              7
+            </option>
+            <option key='8' value='8'>
+              8
+            </option>
+            <option key='9' value='9'>
+              9
+            </option>
+            <option key='10' value='10'>
+              10
+            </option>
+            <option key='11' value='11'>
+              11
+            </option>
+            <option key='12' value='12'>
+              12
+            </option>
+          </select>{' '}
+          월{' '}
+          <select
+            name='weeks'
+            value={week}
+            onChange={e => {
+              const { value } = e.currentTarget;
+              setWeek(value);
+              handleCalendar(month, Number(value), calendarList);
+            }}
+            style={{ fontSize: '2rem', lineHeight: '2rem' }}
+          >
+            {calendarList?.map((v, i) => (
+              <option key={v['weekNum']} value={v['weekNum']}>
+                {v['weekNum']}
+              </option>
             ))}
-          </div>
+          </select>{' '}
+          주차
         </div>
         <ButtonCircle
           onClick={handleNext}
