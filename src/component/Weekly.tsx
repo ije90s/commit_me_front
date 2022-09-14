@@ -32,76 +32,104 @@ interface IProps {
 }
 
 const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
-  const [startDate, setStartDate] = React.useState(''); //시작일
-  const [kind, setKind] = React.useState('now'); //구분
-  const [dayList, setDayList] = React.useState([]); //주 리스트
-
   const now = new Date();
+  const [year, setYear] = React.useState(now.getFullYear().toString()); //년
+  const [month, setMonth] = React.useState((now.getMonth() + 1).toString()); //월
+  const [week, setWeek] = React.useState('1'); //주차
+  const [calendarList, setCalendar] = React.useState([]); //선택된 월 리스트
+  const [weekList, setWeeks] = React.useState([]); //선택된 주 리스트
 
   //날짜 일만 출력
   function getDay(date: string) {
     return new Date(date).getDate();
   }
 
-  //1주 조회
-  async function updateWeek() {
-    //현재의 주 조회
-    let res = await weekApi.read(startDate, kind);
-    const weekDate = res.weekDate.split(',');
+  //날짜 포맷 출력
+  function getDateForm(date: Date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
 
-    //출석체크 조회
-    res = await attendanceApi.read({ startDate: weekDate[0], endDate: weekDate[6] });
+    return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+  }
 
-    //시작일/주 리스트/출석체크 셋팅
-    setStartDate(prev => {
-      prev = weekDate[0];
-      return prev;
+  //월 조회
+  async function handleCalendar(selectedMonth = month, selectedWeek = 1) {
+    let nextMonth = Number(selectedMonth);
+    //월 계산
+    if (selectedWeek < 1) {
+      //선택된 주가 1보다 작은 경우, 이전달
+      nextMonth -= 1;
+    } else if (selectedWeek > calendarList.length && calendarList.length > 0) {
+      //선택된 주가 막 주보다 큰 경우, 다음달
+      nextMonth += 1;
+      selectedWeek = 1;
+    }
+
+    //월 리스트 데이터 가공
+    const res = await weekApi.monthRead(year, String(nextMonth));
+    let weekDateArr = [];
+    if (selectedWeek < 1) selectedWeek = res.length; //이전달은 막주로 변경
+    for (const item of res) {
+      const { weekNum, weekDate } = item;
+      let selected = false;
+
+      if (String(weekDate).includes(getDateForm(now)) && calendarList.length === 0)
+        selectedWeek = weekNum;
+
+      //주 선택(true | false)
+      if (weekNum === selectedWeek) selected = true;
+      item.selected = selected;
+      item.weekDate = String(weekDate).split(',');
+      if (selected) weekDateArr = item.weekDate;
+    }
+
+    //출석체크
+    updateAttendance(weekDateArr);
+
+    //셋팅
+    setMonth(() => {
+      return String(nextMonth);
     });
-    setDayList(prev => {
-      for (let i = 0; i < weekDate.length; i++) {
-        weekDate[i] = {
-          week: weekDays[i],
-          date: getDay(weekDate[i]),
-        };
-      }
+
+    setWeek(() => {
+      return String(selectedWeek);
+    });
+
+    setCalendar(() => {
+      return res;
+    });
+  }
+
+  //출석체크 조회
+  async function updateAttendance(weekDate: any) {
+    const res = await attendanceApi.read({ startDate: weekDate[0], endDate: weekDate[6] });
+    setWeeks(prev => {
       prev = weekDate;
       return prev;
     });
     setAttendanceData((prev: any) => {
-      prev = res;
       return res;
     });
   }
 
   //이전 주
   const handlePrev = () => {
-    setKind(prev => {
-      prev = 'prev';
-      return prev;
-    });
-    updateWeek();
+    handleCalendar(month, Number(week) - 1);
   };
 
   //다음 주
   const handleNext = () => {
-    setKind(prev => {
-      prev = 'next';
-      return prev;
-    });
-    updateWeek();
+    handleCalendar(month, Number(week) + 1);
   };
 
-  // useEffect(() => {
-  //   return () => console.log('Clean up');
-  // });
-
-  // const Week = useRef(null);
+  const handleMonth = (selectedMonth: any) => {
+    handleCalendar(selectedMonth, 1);
+  };
 
   React.useEffect(() => {
-    updateWeek();
-  }, [kind]);
-
-  const thisDate = new Date(startDate);
+    handleCalendar(month, Number(week));
+  }, []);
 
   return (
     <Container>
@@ -109,7 +137,94 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
         <Title style={{ marginTop: '0', marginLeft: '0' }}>출석 체크</Title>
       </div>
       <div className='calendar_title'>
-        {thisDate.getFullYear()}년 {thisDate.getMonth() + 1}월
+        <select
+          name='year'
+          value={year}
+          onChange={e => {
+            setYear(e.currentTarget.value);
+          }}
+          style={{ fontSize: '2rem', lineHeight: '2rem' }}
+        >
+          <option key='2022' value='2022'>
+            2022
+          </option>
+          <option key='2023' value='2022'>
+            2023
+          </option>
+          <option key='2024' value='2022'>
+            2024
+          </option>
+          <option key='2025' value='2022'>
+            2025
+          </option>
+          <option key='2026' value='2022'>
+            2026
+          </option>
+        </select>{' '}
+        년{' '}
+        <select
+          name='month'
+          value={month}
+          onChange={e => {
+            handleMonth(e.currentTarget.value);
+          }}
+          style={{ fontSize: '2rem', lineHeight: '2rem' }}
+        >
+          <option key='1' value='1'>
+            1
+          </option>
+          <option key='2' value='2'>
+            2
+          </option>
+          <option key='3' value='3'>
+            3
+          </option>
+          <option key='4' value='4'>
+            4
+          </option>
+          <option key='5' value='5'>
+            5
+          </option>
+          <option key='6' value='6'>
+            6
+          </option>
+          <option key='7' value='7'>
+            7
+          </option>
+          <option key='8' value='8'>
+            8
+          </option>
+          <option key='9' value='9'>
+            9
+          </option>
+          <option key='10' value='10'>
+            10
+          </option>
+          <option key='11' value='11'>
+            11
+          </option>
+          <option key='12' value='12'>
+            12
+          </option>
+        </select>{' '}
+        월{' '}
+        <select
+          name='weeks'
+          value={week}
+          onChange={e => {
+            const { value } = e.currentTarget;
+            setWeek(value);
+            handleCalendar(month, Number(value));
+          }}
+          style={{ fontSize: '2rem', lineHeight: '2rem' }}
+        >
+          {calendarList?.map((v, i) => (
+            <option key={v['weekNum']} value={v['weekNum']}>
+              {v['weekNum']}
+            </option>
+          ))}
+        </select>{' '}
+        주차
       </div>
       <div className='calendar_wrap'>
         <ButtonCircle
@@ -125,17 +240,17 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
         </ButtonCircle>
         <div className='calendar_section'>
           <div className='week_section'>
-            {dayList?.map((v, i) => (
+            {weekList?.map((v, i) => (
               <>
                 <div
                   className={cn(
                     'week_box',
-                    i === now.getDay() && now.getDate() === v['date'] ? 'now' : '',
+                    i === now.getDay() && now.getDate() === getDay(v) ? 'now' : '',
                   )}
                 >
-                  <h3 className='week_title'>{v['week']}</h3>
-                  <p className={cn(`week_${v['date']}`, i === 0 ? 'sun' : i === 6 ? 'sat' : '')}>
-                    {v['date']}
+                  <h3 className='week_title'>{weekDays[i]}</h3>
+                  <p className={cn(`week_${getDay(v)}`, i === 0 ? 'sun' : i === 6 ? 'sat' : '')}>
+                    {getDay(v)}
                   </p>
                 </div>
               </>
@@ -192,9 +307,6 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
           ＞
         </ButtonCircle>
       </div>
-      {/* <div className='calendar_title'>
-        <button onClick={handleAttendance()}>∨</button>
-      </div> */}
     </Container>
   );
 };
