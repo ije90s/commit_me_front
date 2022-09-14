@@ -10,6 +10,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/ko';
 import { weekApi, attendanceApi } from '@/api/config';
+import ButtonRectang from './button/ButtonRectang';
 dayjs.locale('ko');
 dayjs.extend(weekday);
 dayjs.extend(isoWeek);
@@ -54,13 +55,13 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
   }
 
   //월 조회
-  async function handleCalendar(selectedMonth = month, selectedWeek = 1) {
+  async function handleCalendar(selectedMonth = month, selectedWeek = 1, selectedArr = []) {
     let nextMonth = Number(selectedMonth);
     //월 계산
     if (selectedWeek < 1) {
       //선택된 주가 1보다 작은 경우, 이전달
       nextMonth -= 1;
-    } else if (selectedWeek > calendarList.length && calendarList.length > 0) {
+    } else if (selectedWeek > selectedArr.length && selectedArr.length > 0) {
       //선택된 주가 막 주보다 큰 경우, 다음달
       nextMonth += 1;
       selectedWeek = 1;
@@ -69,13 +70,20 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
     //월 리스트 데이터 가공
     const res = await weekApi.monthRead(year, String(nextMonth));
     let weekDateArr = [];
-    if (selectedWeek < 1) selectedWeek = res.length; //이전달은 막주로 변경
+
+    if (selectedWeek < 1) {
+      //이전달은 막주로 변경
+      selectedWeek = res.length;
+    } else if (selectedArr.length === 0) {
+      //현재 날짜 기준의 주로 변경
+      selectedWeek = res.filter((el: any) => String(el.weekDate).includes(getDateForm(now)))[0][
+        'weekNum'
+      ];
+    }
+
     for (const item of res) {
       const { weekNum, weekDate } = item;
       let selected = false;
-
-      if (String(weekDate).includes(getDateForm(now)) && calendarList.length === 0)
-        selectedWeek = weekNum;
 
       //주 선택(true | false)
       if (weekNum === selectedWeek) selected = true;
@@ -115,7 +123,7 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
 
   //이전 주
   const handlePrev = () => {
-    handleCalendar(month, Number(week) - 1);
+    handleCalendar(month, Number(week) - 1, calendarList);
   };
 
   //다음 주
@@ -124,11 +132,15 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
   };
 
   const handleMonth = (selectedMonth: any) => {
-    handleCalendar(selectedMonth, 1);
+    handleCalendar(selectedMonth, 1, calendarList);
+  };
+
+  const handleClick = () => {
+    handleCalendar(String(now.getMonth() + 1), 1, []);
   };
 
   React.useEffect(() => {
-    handleCalendar(month, Number(week));
+    handleCalendar(month, Number(week), []);
   }, []);
 
   return (
@@ -214,7 +226,7 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
           onChange={e => {
             const { value } = e.currentTarget;
             setWeek(value);
-            handleCalendar(month, Number(value));
+            handleCalendar(month, Number(value), calendarList);
           }}
           style={{ fontSize: '2rem', lineHeight: '2rem' }}
         >
@@ -224,7 +236,10 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
             </option>
           ))}
         </select>{' '}
-        주차
+        주차{' '}
+        <ButtonRectang color='#18A0FB' name='current' onClick={handleClick}>
+          현재
+        </ButtonRectang>
       </div>
       <div className='calendar_wrap'>
         <ButtonCircle
