@@ -7,7 +7,6 @@ import Title from '@/component/Title';
 import weekday from 'dayjs/plugin/weekday';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/ko';
 import { weekApi, attendanceApi } from '@/api/config';
 import ButtonRectang from './button/ButtonRectang';
@@ -20,6 +19,27 @@ dayjs.extend(weekOfYear);
  * @returns {한 주씩 보여주는 주간 달력}
  */
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+const years = [
+  { value: '2022', name: '2022' },
+  { value: '2023', name: '2023' },
+  { value: '2024', name: '2024' },
+  { value: '2025', name: '2025' },
+  { value: '2026', name: '2026' },
+];
+const months = [
+  { value: '1', name: '1' },
+  { value: '2', name: '2' },
+  { value: '3', name: '3' },
+  { value: '4', name: '4' },
+  { value: '5', name: '5' },
+  { value: '6', name: '6' },
+  { value: '7', name: '7' },
+  { value: '8', name: '8' },
+  { value: '9', name: '9' },
+  { value: '10', name: '10' },
+  { value: '11', name: '11' },
+  { value: '12', name: '12' },
+];
 const todayObj = dayjs();
 
 interface IAttendanceData {
@@ -155,77 +175,37 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
       </div>
       <div className='calendar_title'>
         <select
+          className='select_styled'
           name='year'
           value={year}
           onChange={e => {
             setYear(e.currentTarget.value);
           }}
-          style={{ fontSize: '2rem', lineHeight: '2rem' }}
         >
-          <option key='2022' value='2022'>
-            2022
-          </option>
-          <option key='2023' value='2022'>
-            2023
-          </option>
-          <option key='2024' value='2022'>
-            2024
-          </option>
-          <option key='2025' value='2022'>
-            2025
-          </option>
-          <option key='2026' value='2022'>
-            2026
-          </option>
+          {years.map((v, i) => (
+            <option key={v.value} value={v.value}>
+              {v.name}
+            </option>
+          ))}
         </select>{' '}
         년{' '}
         <select
+          className='select_styled'
           name='month'
           value={month}
           onChange={e => {
             handleMonth(e.currentTarget.value);
           }}
-          style={{ fontSize: '2rem', lineHeight: '2rem' }}
         >
-          <option key='1' value='1'>
-            1
-          </option>
-          <option key='2' value='2'>
-            2
-          </option>
-          <option key='3' value='3'>
-            3
-          </option>
-          <option key='4' value='4'>
-            4
-          </option>
-          <option key='5' value='5'>
-            5
-          </option>
-          <option key='6' value='6'>
-            6
-          </option>
-          <option key='7' value='7'>
-            7
-          </option>
-          <option key='8' value='8'>
-            8
-          </option>
-          <option key='9' value='9'>
-            9
-          </option>
-          <option key='10' value='10'>
-            10
-          </option>
-          <option key='11' value='11'>
-            11
-          </option>
-          <option key='12' value='12'>
-            12
-          </option>
+          {months.map((v, i) => (
+            <option key={v.value} value={v.value}>
+              {v.name}
+            </option>
+          ))}
         </select>{' '}
         월{' '}
         <select
+          className='select_styled'
           name='weeks'
           value={week}
           onChange={e => {
@@ -233,7 +213,6 @@ const Weekly: React.FC<IProps> = ({ attendanceData, setAttendanceData }) => {
             setWeek(value);
             handleCalendar(month, Number(value), calendarList);
           }}
-          style={{ fontSize: '2rem', lineHeight: '2rem' }}
         >
           {calendarList?.map((v, i) => (
             <option key={v['weekNum']} value={v['weekNum']}>
@@ -345,6 +324,13 @@ const Container = styled.div`
     text-align: center;
     font-size: 2rem;
     padding: 10px 0;
+    .select_styled {
+      width: 8rem;
+      border: 1px solid ${props => props.theme.colors.blue_1};
+      border-radius: 0.3rem;
+      font-size: 2rem;
+      line-height: 2rem;
+    }
   }
   .calendar_wrap {
     display: flex;
