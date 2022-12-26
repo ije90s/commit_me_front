@@ -2,7 +2,7 @@ import axios from 'axios';
 
 //** 로컬 */
 export const commitLocal = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'http://localhost:8000/',
 });
 
 //** 서버 */
@@ -31,21 +31,21 @@ interface IProps {
 
 export const accountApi = {
   rankingRead: (name: string) =>
-    commitReal
+    commitLocal
       .get(`${Account}/ranking?kind=${name}`)
       .then(res => {
         return res.data.map((v: any, i: number) => ({ ...v, key: i + 1 }));
       })
       .catch(err => console.log(err)),
   rankingUpdate: () =>
-    commitReal
+    commitLocal
       .put(`${Account}/ranking-update`)
       .then(res => res.data)
       .catch(err => console.log(err)),
 };
 export const attendanceApi = {
   register: (userInfo: IUserInfo) =>
-    commitReal
+    commitLocal
       .post(`${Attendance}/register`, {
         user_id: userInfo.user_id,
         attendance_date: userInfo.attendance_date,
@@ -53,7 +53,7 @@ export const attendanceApi = {
       .then(res => console.log(res))
       .catch(err => console.log(err)),
   read: (attendanceDate: IAttendanceDate) =>
-    commitReal
+    commitLocal
       .get(
         `${Attendance}/search?startDate=${attendanceDate.startDate}&endDate=${attendanceDate.endDate}`,
       )
@@ -63,7 +63,7 @@ export const attendanceApi = {
 
 export const historyApi = {
   read: () =>
-    commitReal
+    commitLocal
       .get(`${History}?kind=commits`)
       .then(res => console.log(res))
       .catch(err => console.log(err)),
@@ -78,7 +78,7 @@ export const historyApi = {
       .then(res => console.log(res))
       .catch(err => console.log(err)),
   delete: () =>
-    commitReal
+    commitLocal
       .delete(`${History}/remove?kind=comments`)
       .then(res => console.log(res))
       .catch(err => console.log(err)),
@@ -86,12 +86,12 @@ export const historyApi = {
 
 export const weekApi = {
   weekRead: (startDate: string, kind: string) =>
-    commitReal
+    commitLocal
       .get(`week-search?startDate=${startDate}&kind=${kind}`)
       .then(res => res.data)
       .catch(err => console.log(err)),
   monthRead: (year: string, month: string) =>
-    commitReal
+    commitLocal
       .get(`month-week-search?year=${year}&month=${month}`)
       .then(res => res.data)
       .catch(err => console.log(err)),
