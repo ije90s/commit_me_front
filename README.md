@@ -5,7 +5,7 @@
 ![커밋미 샘플](./commitme_sample.gif)
 
 - 관련 Description은 [위키](https://github.com/ije90s/commit_me/wiki) 정리
-- 2022.08.02 Netlify으로 배포 | 2022.10.31 Heroku 서버 종료로 Netlify 중단, 로컬 가능
+- 2022.08.02 Netlify으로 배포 | 2022.10.31 Heroku 서버 종료로 Netlify 중단
 
 ## Running app
 
